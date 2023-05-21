@@ -1,0 +1,1350 @@
+;task 1 Take a number in AX, and if it"s a negative number, replace it by 5.
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA    
+A DB "   IN DECIMAL IT IS $"   
+B DB "ENTER A HEX DIGIT $"
+;c db " and $"
+;d DB " IS $"
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+  
+
+    MOV BL,-3 
+    CMP BL,0
+    JL NEGG 
+    
+    MOV DL,BL  
+    ADD DL,48
+    MOV AH,2
+    INT 21H
+    JMP EXIT
+    NEGG:
+    MOV BL,5
+    MOV AH,2
+    MOV DL,BL 
+    ADD DL,48
+    INT 21H
+    EXIT:
+    
+    
+   
+    
+    MAIN ENDP
+END MAIN
+
+========================================================================================
+;task 2 Suppose AL and BL contain extended ASCII characters. Display the one that comes first
+in the character sequence.
+.MODEL SMALL
+.STACK 100H
+.DATA    
+
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+  
+
+    MOV AL,"A"
+    MOV BL,"Z" 
+    
+    CMP AL,BL
+    JL NEGG  
+    CMP BL,AL
+    JL NEGG
+    JMP EXIT
+    
+    NEGG:
+    MOV DL,BL
+    MOV AH,2
+    INT 21H
+    EXIT:
+    
+    
+   
+    
+    MAIN ENDP
+END MAIN
+
+
+======================================================================
+
+;task 3 If AX contains a negative number, put -1 in BX; if AX contains 0, put 0 In BX; if AX
+contains a positive number, put 1 in BX.
+
+.MODEL SMALL
+.STACK 100H
+.DATA    
+ A DB "-$"
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+  
+
+ 
+    MOV AL,-1
+    
+    CMP AL,"0"
+    JE ZERO
+    JL NEGG
+    
+    
+    MOV BX,1
+    MOV AH,2
+    MOV DX,BX  
+    ADD DX,48
+    INT 21H
+    
+    JMP EXIT
+    
+    ZERO:
+    MOV BX,0
+    MOV AH,2
+    MOV DX,BX   
+    ADD DX,48
+    INT 21H
+    
+    JMP EXIT
+    NEGG: 
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    MOV BX,1
+    MOV AH,2
+    MOV DX,BX
+    ADD DX,48
+    INT 21H
+    
+    EXIT:
+    
+   
+    
+   
+    
+    MAIN ENDP
+END MAIN
+=================================================================================
+
+;task 4 If AL contains 1 or 3, display “o”; if AL contains 2 or 4 display "e".
+
+data segment
+    ; add your data here!
+    pkey db "press any key...$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    
+    ; Task 04 : 
+    ; If AL contains 1 or 3, display “o”; if AL contains 2 or 4 display "e". 
+    
+    mov al, 1
+    ;mov al, 3
+    ;mov al, 2
+    ;mov al, 4
+    
+    cmp al, 1
+    je dispO
+     
+    cmp al, 3
+    je dispO
+    
+    cmp al, 2
+    je dispE 
+    
+    cmp al, 4
+    je dispE
+    
+    dispO:
+        mov ah, 2
+        mov dl, 'o'
+        int 21h
+        jmp exit:
+    
+    dispE:
+        mov ah, 2
+        mov dl, 'e'
+        int 21h
+        jmp exit: 
+        
+    exit:
+
+
+    lea dx, pkey
+    mov ah, 9
+    int 21h        ; output string at ds:dx
+    
+    ; wait for any key....    
+    mov ah, 1
+    int 21h
+    
+    mov ax, 4c00h ; exit to operating system.
+    int 21h    
+ends
+
+end start ; set entry point and stop the assembler.
+
+=================================================================================
+
+; Task 05 Read a character, and if it's an uppercase letter, display it.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+   
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    
+    mov ah , 1
+    int 21h
+    
+    cmp al , 61h
+    jl print
+    jmp exit
+    
+    print:
+    mov ah , 2
+    mov dl , al
+    int 21h
+    
+    exit:
+            
+    
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+
+=============================================================================
+;Task 06 Read a character. If it's "y" or "Y", display it; otherwise, terminate the program.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+            
+    mov ah , 1
+    int 21h
+    
+    cmp al , 59h
+    je printY
+    
+    
+    cmp al , 79h
+    je printY
+    jmp exit
+    
+    printY:
+    mov ah , 2
+    mov dl , al
+    int 21h 
+    exit:
+    
+ends
+
+end start ; set entry point and stop the assembler.
+
+===========================================================================
+
+;Task 07 Write an assembly program to check whether a number is even or odd.
+
+; multi-segment executable file template.
+
+.MODEL SMALL
+.STACK 100H
+.DATA    
+ A DB "THIS IS AN ODD NUMBER $" 
+ B DB "THIS IS AN EVEN NUMBER $"
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+  
+
+ 
+    MOV AH,1
+    INT 21H
+    
+    MOV BL,AL
+    
+    MOV BH,2
+    DIV BH
+    
+    CMP AH,0
+    JE EVEN
+    
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    JMP EXIT
+    
+    EVEN:
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    
+    
+    EXIT:
+    
+   
+    
+   
+    
+    MAIN ENDP
+END MAIN
+
+==================================================================
+;Task 08 Write a program to input any alphabet and check whether it is vowel or consonant.
+
+data segment
+    ; add your data here!
+    e db "Vowel$"
+    o db "Constant$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+            
+    mov ah , 1
+    int 21h
+    
+    cmp al , 'A'
+    je printEven
+    cmp al , 'E'
+    je printEven
+    cmp al , 'I'
+    je printEven
+    cmp al , 'O'
+    je printEven
+    cmp al , 'U'
+    je printEven
+    
+    cmp al , 'a'
+    je printEven
+    cmp al , 'e'
+    je printEven
+    cmp al , 'i'
+    je printEven
+    cmp al , 'o'
+    je printEven
+    cmp al , 'u'
+    je printEven
+    
+    LEA DX,o 
+    mov AH,9 
+    int 21h 
+    jmp exit
+   
+   
+    printEven:  
+    LEA DX,e 
+    mov AH,9 
+    int 21h 
+    
+    exit:
+    
+     
+ends
+
+end start ; set entry point and stop the assembler.
+
+=====================================================================
+;task 9 - divisble by 5 or 11
+
+data segment
+    ; add your data here!
+    divisible db "Divisible by 5 and 11 ...$"
+    end db "The END$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+                    
+    mov cx, 50 ; the number  
+    mov bh, 5  ; 5
+    mov bl, 11 ; 11
+    
+    ;divisible 5
+    mov ax, cx
+    div bh
+    cmp ah, 0
+    je multiple5
+    jmp exit
+    
+    
+    ;divisible 11
+    multiple5:
+    mov ax, cx 
+    div bl
+    cmp ah, 0               
+    je multiple5and11
+    jmp exit                        
+    
+    ;print
+    multiple5and11:
+    mov ah, 9
+    lea dx, divisible
+    int 21h
+    jmp exit
+                    
+                    
+    exit:
+    mov ah, 9
+    lea dx, end
+    int 21h                
+                    
+                    
+    
+    ; exit to operating system.
+      
+ends
+
+end start ; set entry point and stop the assembler.
+
+========================================================================
+
+;task 10 compare 3 numbers and find min max 
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA    
+ A DB " minimum number is $" 
+ B DB " maximum number is $"
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+  
+    MOV AH,1
+    INT 21H
+    MOV BL,AL
+    INT 21H
+    MOV BH,AL
+    INT 21H    
+    MOV CL,AL
+    
+    
+    CMP BL,BH
+    JL MIN
+    CMP BH,CL
+    JG MIN1
+    
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    
+    MOV DL,BH
+    MOV AH,2
+    INT 21H
+    
+    JMP GREATER
+  
+    MIN:
+    CMP BL,CL
+    JG MIN1
+    
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,BL
+    INT 21H
+    
+    JMP GREATER
+    MIN1:
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,CL
+    INT 21H  
+    
+    GREATER:   
+    CMP BL,BH
+    JG MAX
+    CMP BH,CL
+    JL MAX1
+    
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    MOV DL,BH
+    MOV AH,2
+    INT 21H
+    
+    JMP EXIT
+  
+    MAX:
+    CMP BL,CL
+    JL MAX1
+    
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,BL
+    INT 21H
+    
+    JMP EXIT
+    MAX1:
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,CL
+    INT 21H  
+    EXIT:
+    
+    
+    MAIN ENDP
+END MAIN
+
+
+
+================================================================================================
+; EXTRA compare 3 numbers + even odd check the min and max
+
+.MODEL SMALL  
+
+
+    
+.STACK 100H
+.DATA    
+ A DB " min $" 
+ B DB " max $"    
+ C DB " EVEN $"
+ D DB " ODD $"
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+  
+    MOV AH,1
+    INT 21H
+    MOV BL,AL
+    INT 21H
+    MOV BH,AL
+    INT 21H    
+    MOV CL,AL
+    
+    
+    CMP BL,BH
+    JL MIN
+    CMP BH,CL
+    JG MIN1
+    
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    
+    MOV DL,BH
+    MOV AH,2
+    INT 21H
+    
+    MOV CH,2
+    MOV AL,BH
+    MOV AH,0
+    DIV CH
+    CMP AH,0
+    JE EVEN1 
+    
+    LEA DX,D
+    MOV AH,9
+    INT 21H
+    
+    
+    JMP EXIT1
+    EVEN1:
+    LEA DX,C
+    MOV AH,9
+    INT 21H
+    EXIT1:
+    
+    JMP GREATER
+  
+    MIN:
+    CMP BL,CL
+    JG MIN1
+    
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,BL
+    INT 21H
+    
+    MOV CH,2
+    MOV AL,BL
+    MOV AH,0
+    DIV CH
+    CMP AH,0
+    JE EVEN2 
+    
+    LEA DX,D
+    MOV AH,9
+    INT 21H
+    
+    
+    JMP EXIT2
+    EVEN2:
+    LEA DX,C
+    MOV AH,9
+    INT 21H
+    EXIT2:
+    
+    JMP GREATER
+    MIN1:
+    LEA DX,A
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,CL
+    INT 21H  
+    MOV CH,2
+    MOV AL,CL
+    MOV AH,0
+    DIV CH
+    CMP AH,0
+    JE EVEN3 
+    
+    LEA DX,D
+    MOV AH,9
+    INT 21H
+    
+    
+    JMP EXIT3
+    EVEN3:
+    LEA DX,C
+    MOV AH,9
+    INT 21H
+    EXIT3:
+    GREATER:   
+    CMP BL,BH
+    JG MAX
+    CMP BH,CL
+    JL MAX1
+    
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    MOV DL,BH
+    MOV AH,2
+    INT 21H
+    MOV CH,2
+    MOV AL,BH
+    MOV AH,0
+    DIV CH
+    CMP AH,0
+    JE EVEN4 
+    
+    LEA DX,D
+    MOV AH,9
+    INT 21H
+    
+    
+    JMP EXIT4
+    EVEN4:
+    LEA DX,C
+    MOV AH,9
+    INT 21H
+    EXIT4:
+    JMP EXIT
+  
+    MAX:
+    CMP BL,CL
+    JL MAX1
+    
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,BL
+    INT 21H
+   MOV CH,2
+    MOV AL,BL
+    MOV AH,0
+    DIV CH
+    CMP AH,0
+    JE EVEN5 
+    
+    LEA DX,D
+    MOV AH,9
+    INT 21H
+    
+    
+    JMP EXIT5
+    EVEN5:
+    LEA DX,C
+    MOV AH,9
+    INT 21H
+    EXIT5:
+    JMP EXIT
+    MAX1:
+    LEA DX,B
+    MOV AH,9
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,CL
+    INT 21H
+    MOV CH,2
+    MOV AL,CL
+    MOV AH,0
+    DIV CH
+    CMP AH,0
+    JE EVEN6 
+    
+    LEA DX,D
+    MOV AH,9
+    INT 21H
+    
+    
+    JMP EXIT6
+    EVEN6:
+    LEA DX,C
+    MOV AH,9
+    INT 21H
+    EXIT6:
+    
+
+      
+    EXIT:
+;    
+;    MOV AX,4C00H
+;    INT 21H
+    MAIN ENDP
+END MAIN
+============================================================================
+
+;task 11 check if triangle or not
+
+data segment
+    ; add your data here!
+    yes db "Y$"
+    no db "N$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    
+    mov bh, 3
+    mov ch, 2
+    mov dh, 4
+    
+    ;comparing bh, ch
+    cmp bh, ch
+    jg bhbig 
+    jmp chbig
+    
+    ;comparing bh, dh
+    bhbig:
+    cmp bh, dh
+    jg bhbig2
+    jmp dhbig
+    
+    ;comparing ch, dh
+    chbig:
+    cmp ch, dh
+    jg chbig2
+    jmp dhbig
+    
+    ;varifying triangle 
+    bhbig2:
+    add ch, dh
+    cmp ch, bh
+    jg printy
+    jmp printn
+    
+    ;varifying triangle
+    chbig2:
+    add bh, dh
+    cmp bh, ch
+    jg printy
+    jmp printn
+    
+    ;varifying triangle
+    dhbig:
+    add bh, ch
+    cmp bh, dh
+    jg printy
+    jmp printn
+    
+    
+    ;printing Y
+    printy:
+    mov ah, 9
+    lea dx, yes
+    int 21h
+    jmp exit
+    
+    ;printing N
+    printn:
+    mov ah, 9
+    lea dx, no
+    int 21h
+    
+    exit:
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    ; exit to operating system.
+        
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+==================================================================
+;Task 12 Write a program that takes a digit as an input and outputs the
+ following. If the digit is within 0-3, 
+it prints “i”, If it?s within 4-6, it prints “k”, 
+If it?s within 7-9, it prints “l” and if it?s 10, it prints “m”.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    input db "Input: $"
+    output db "Output: $"
+    i db "i$"
+    k db "k$"
+    l db "l$"
+    m db "m&"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    lea dx, input
+    mov ah, 9
+    int 21h
+    
+    mov ah, 1
+    int 21h
+    
+    cmp al , 30h
+    je printI
+    cmp al , 31h
+    je printI
+    cmp al , 32h
+    je printI
+    cmp al , 33h
+    je printI
+    
+    
+    cmp al , 34h
+    je printK
+    cmp al , 35h
+    je printK
+    cmp al , 36h
+    je printK
+    
+    cmp al , 37h
+    je printL
+    cmp al , 38h
+    je printL
+    cmp al , 39h
+    je printL
+    
+    cmp al , 40h
+    je printM
+    
+    
+  
+    printI:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, i
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printK:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, k
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printL:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, l
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printM:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, m
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+        
+    exit:
+    
+    
+    
+            
+        
+ends
+
+end start ; set entry point and stop the assembler.
+
+=============================================================================
+
+;Task 13 Write a case to print the name of the day of the week. Consider the first day of the week is Saturday.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    input db "Input: $"
+    output db "Output: $"
+    sat db "Saturday$"
+    sun db "Sunday$"
+    mon db "Monday$"
+    tue db "Tuesday$"
+    wed db "Wednesday$"
+    thu db "Thursday$"
+    fri db "Friday$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    lea dx, input
+    mov ah, 9
+    int 21h
+    
+    mov ah, 1
+    int 21h
+    
+    cmp al , 31h
+    je printSat
+    cmp al , 32h
+    je printSun
+    cmp al , 33h
+    je printMon
+    cmp al , 34h
+    je printTue
+    cmp al , 35h
+    je printWed
+    cmp al , 36h
+    je printThu
+    cmp al , 37h
+    je printFri
+    
+    
+    printSat:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, sat
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+        
+    printSun:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, sun
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printMon:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, mon
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printTue:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, tue
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printWed:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, wed
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printThu:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, thu
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    printFri:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, fri
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    exit:        
+        
+ends
+
+end start ; set entry point and stop the assembler.
+
+===========================================================================
+
+;Task 14 Write a case to print the total number of days in a month.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    input db "Input: $"
+    output db "Output: $"
+    28days db "28 days$"
+    30days db "30 days$"
+    31days db "31 days$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    lea dx, input
+    mov ah, 9
+    int 21h
+    
+    mov ah, 1
+    int 21h
+    
+    cmp al , 31h
+    je print31
+    
+    cmp al , 32h
+    je print28
+    
+    cmp al , 33h
+    je print31
+    
+    cmp al ,  34h
+    je print30
+    
+    cmp al , 35h
+    je print31
+    
+    cmp al , 36h
+    je print30
+    
+    cmp al , 37h
+    je print31
+    
+    cmp al ,  38h
+    je print31
+    
+    cmp al ,  39h
+    je print30
+    
+    cmp al ,  40h
+    je print31
+    
+    
+    print28:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h 
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, 28days
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    print30:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h 
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, 30days
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    print31:
+        mov dl, 0AH
+        mov ah , 2
+        int 21h
+        mov dL,0DH 
+        int 21h 
+        mov dL,0AH 
+        int 21h 
+        
+        lea dx, output
+        mov ah, 9
+        int 21h
+        
+        lea dx, 31days
+        mov ah, 9
+        int 21h
+        jmp exit
+        
+    exit:       
+       
+ends
+
+end start ; set entry point and stop the assembler.
+
+

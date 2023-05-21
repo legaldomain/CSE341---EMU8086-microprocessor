@@ -1,0 +1,750 @@
+
+ARRAY DEFINE CODE: 
+===================================================================
+.MODEL SMALL
+.STACK 100H
+
+.DATA
+;INTRO[] = [1,2,3,4,5]
+;a db 1,2,3,4,5
+a db "hello"
+;a dw 1,2,3,4,5
+
+;b db 5 dup (?)
+
+.CODE
+MAIN PROC
+
+;INITIALIZATION
+MOV AX, @DATA
+MOV DS,AX
+
+MOV CX, 5
+MOV AH, 2
+LEA SI, A
+
+ARRAY:
+
+MOV DL,[SI]
+;ADD DL, 30H
+INT 21H
+INC SI
+
+LOOP ARRAY  
+
+exit:
+===================================================================
+USING 2 POINTER TO DEFINE ARRAY : 
+
+
+.MODEL SMALL
+.STACK 100H
+; USING 2 POINTER 
+
+
+.DATA
+;INTRO[] = [1,2,3,4,5]
+a db 1,2,3,4,5
+;a db "hello"
+;a dw 1,2,3,4,5
+
+;b db 5 dup (?)
+
+.CODE
+MAIN PROC
+
+;INITIALIZATION
+MOV AX, @DATA
+MOV DS,AX
+
+MOV CX, 5
+MOV AH, 2
+MOV SI, 0
+
+ARRAY:
+
+MOV DL,A[SI]
+ADD DL, 30H
+INT 21H
+INC SI
+
+LOOP ARRAY  
+
+exit:
+===================================================================
+;TASK  (Increment and print array) 
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   A  DB "1"," 2"," 3"," 4"," 5"," 14"," 15"," 16"
+  
+ 
+ .CODE
+   MAIN PROC    
+   
+   mov AX, @data   
+   MOV DS,AX
+
+   
+   
+   MOV CX,18
+   MOV AH,2  
+   MOV SI,0  
+   
+   START:
+   MOV DL,A[SI] 
+   
+   INT 21H
+   INC SI   
+   
+   LOOP START
+   
+   MAIN ENDP
+ END MAIN
+===============================================================
+;TASK 1 INCREMENT ANY GIVEN ARRAY BY (X+3)
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   A  DB  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+  
+ 
+ .CODE
+   MAIN PROC    
+   
+   mov AX, @data   
+   MOV DS,AX
+
+   
+   
+   MOV CX,5
+   MOV AH,2  
+   MOV SI,0  
+   
+   START:
+   MOV DL,A[SI]
+   ADD DL,30H 
+   
+   INT 21H
+   ADD SI,3H  ;change in this line to increment by X+ANY number 
+   
+   LOOP START
+   
+   MAIN ENDP
+ END MAIN
+===========================================================================
+;task decrement array X-3
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   A  DB  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+  
+ 
+ .CODE
+   MAIN PROC    
+   
+   mov AX, @data   
+   MOV DS,AX
+
+   
+   
+   MOV CX,5
+   MOV AH,2  
+   MOV SI,14  
+   
+   START:
+   MOV DL,A[SI]
+
+   SUB SI,3H   
+   INT 21H                 
+   LOOP START
+   
+   MAIN ENDP
+ END MAIN
+===========================================================================
+;task 3 Use array to store the name (of fixed length) of the user as a sequence of characters. 
+Then, display the name.
+
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   A  DB  5 dup(?)
+   B DB "sadaf $"
+ 
+ .CODE
+   MAIN PROC    
+   
+   mov AX, @data   
+   MOV DS,AX
+
+
+   MOV CX,5
+   MOV SI,0  
+   
+   START: 
+     
+   MOV AH,1
+   INT 21H
+   MOV A[SI],AL  
+   INC SI      
+                
+   LOOP START   
+   
+   MOV CX,5 
+   MOV AH,2 
+   MOV SI,0
+   
+   ARR:
+          
+   MOV DL,A[SI]
+   INT 21H  
+   INC SI
+   LOOP ARR
+   
+   MAIN ENDP
+   
+ END MAIN
+=========================================================================
+;4. By using the code of Problem 2(decrement) , print the name in reverse order.
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   A  DB  5 dup(?)
+   B DB "SADAF $"
+ 
+ .CODE
+   MAIN PROC    
+   
+   mov AX, @data   
+   MOV DS,AX
+
+
+   MOV CX,5
+   MOV SI,0  
+   
+   START: 
+     
+   MOV AH,1
+   INT 21H
+   MOV A[SI],AL  
+   INC SI      
+                
+   LOOP START   
+   
+   MOV CX,5 
+   MOV AH,2 
+   MOV SI,4
+   
+   ARR:
+          
+   MOV DL,A[SI]
+   INT 21H  
+   DEC SI
+   LOOP ARR
+   
+   MAIN ENDP
+   
+ END MAIN
+
+=====================================================================
+;5. Take an array of size 5. Store random numbers. Then, take two more inputs from the 
+user. First input being an index, i, of the array, the second being a random number, x. 
+After this, add the given input, x, to the value of index, i, of the array.
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    ARR DB 1, 5, 9, 15, 20
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    ;INDEX --> BL
+    MOV AH, 1
+    INT 21H
+    MOV BL, 1H
+    MUL BL
+    MOV CX, AX
+    SUB CX, 30H 
+         
+    ;VALUE --> BH
+    MOV AH, 1
+    INT 21H
+    MOV BL, AL
+    SUB BL, 30H
+    
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    MOV SI, 0
+    ARRAY:
+    CMP SI, CX
+    JNE SKIP
+    
+    MOV DL, ARR[SI]
+    ADD DL, BL
+    ADD DL, 30H
+    INT 21H
+    JMP EXIT 
+    
+    SKIP:
+    INC SI
+    JMP ARRAY
+    
+    
+    EXIT:
+    HLT
+
+
+=====================================================================
+;HOMETASK 1
+;1. Take input the length of the user’s name. Then, take the name as input, and then display
+
+.MODEL SMALL
+.STACK 100H 
+INCLUDE 'EMU8086.INC'
+.DATA
+    ARR DB 20 DUP(?)
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    PRINT "ENTER LENGTH: "
+    MOV AH, 1
+    INT 21H
+    MOV CL, 1H
+    MUL CL
+    MOV CX, AX
+    SUB CX, 30H
+    MOV BX, CX
+    
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    PRINT "INPUTS: "
+    
+    LEA SI, ARR
+    ARRAY_IN:
+    MOV AH, 1
+    INT 21H
+    MOV [SI], AL
+    INC SI
+    LOOP ARRAY_IN 
+    
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    PRINT "OUTPUTS: "
+    
+    MOV CX, BX
+    MOV SI, 0
+    ARRAY_OUT:
+    MOV DL, ARR[SI]
+    INT 21H
+    INC SI
+    LOOP ARRAY_OUT
+    
+    
+    
+    EXIT:
+    HLT
+
+=====================================================================
+;HOMETASK 2,3 IN O_problems
+=====================================================================
+
+
+;take input 5 and sort by ascending order
+
+.MODEL SMALL
+ 
+.STACK 100H
+.DATA 
+ARR DB 5 DUP(?)
+LEN DW $-ARR 
+X DB "INPUT: $"  
+Y DB "SORTED ARRAY: $"
+.CODE 
+
+
+START:
+MOV AX,DATA
+MOV DS,AX
+MOV SI,0
+
+LEA DX,X
+MOV AH,9     
+INT 21H 
+
+
+FOR:
+CMP SI,5
+JE P
+MOV AH,1      ; TAKING INPUT FROM USER
+INT 21H      
+
+SUB AL,30H
+MOV ARR[SI],AL 
+ADD SI,1
+LOOP FOR
+
+P:
+MOV SI,0
+
+MOV DL,0AH    ;PRINT NEWLINE 
+MOV AH,2
+INT 21H 
+MOV DL,0DH
+MOV AH,2
+INT 21H
+
+MOV CX,LEN-1
+MOV SI,0
+
+OUTER:
+LEA SI,ARR
+MOV BX,0
+INNER:
+INC BX
+MOV AL,ARR[SI]
+INC SI
+CMP AL,ARR[SI]
+JB SKIP
+XCHG AL,ARR[SI]
+MOV ARR[SI-1],AL
+SKIP:
+CMP BX,CX
+JL  INNER
+LOOP OUTER 
+
+MOV SI,0
+
+
+PRINT:
+
+LEA DX,Y
+MOV AH,9     
+INT 21H
+
+PRINT_:
+CMP SI,5H
+JE EXIT
+MOV DL,ARR[SI] 
+ADD DL,30H  
+MOV AH,2
+INT 21H
+ADD SI,1
+
+LOOP PRINT_
+
+EXIT:  
+
+MOV AH,4CH
+INT 21H
+
+
+CODE ENDS
+END START
+
+=====================================================
+;take input 5 and sort by descending order
+.MODEL SMALL
+ 
+.STACK 100H
+.DATA 
+ARR DB 5 DUP(?)
+LEN DW $-ARR 
+X DB "INPUT: $"  
+Y DB "SORTED ARRAY: $"
+.CODE 
+
+
+START:
+MOV AX,DATA
+MOV DS,AX
+MOV SI,0
+
+LEA DX,X
+MOV AH,9     
+INT 21H 
+
+
+FOR:
+CMP SI,5
+JE P
+MOV AH,1      ; TAKING INPUT FROM USER
+INT 21H      
+
+SUB AL,30H
+MOV ARR[SI],AL 
+ADD SI,1
+LOOP FOR
+
+P:
+MOV SI,0
+
+MOV DL,0AH    ;PRINT NEWLINE 
+MOV AH,2
+INT 21H 
+MOV DL,0DH
+MOV AH,2
+INT 21H
+
+MOV CX,LEN-1
+MOV SI,0
+
+OUTER:
+LEA SI,ARR
+MOV BX,0
+INNER:
+INC BX
+MOV AL,ARR[SI]
+INC SI
+CMP AL,ARR[SI]
+JB SKIP
+XCHG AL,ARR[SI]
+MOV ARR[SI-1],AL
+SKIP:
+CMP BX,CX
+JL  INNER
+LOOP OUTER 
+
+MOV SI,4
+
+
+PRINT:
+
+LEA DX,Y
+MOV AH,9     
+INT 21H
+
+PRINT_:
+MOV DL,ARR[SI] 
+ADD DL,30H  
+MOV AH,2
+INT 21H
+CMP SI,0H
+JE EXIT
+DEC SI
+
+LOOP PRINT_
+
+EXIT:  
+
+MOV AH,4CH
+INT 21H
+
+
+CODE ENDS
+END START
+======================================================================================
+
+;number of consonents found in a given string 
+
+.MODEL SMALL
+ 
+.STACK 100H
+
+.DATA  
+
+X DB "ENTER A STRING: $" 
+T DB "TOTAL CHARACTER: $"
+Y DB "TOTAL CONSONANT: $"
+TOTAL DB 0
+VOWEL DB 0
+CON DB 0
+
+.CODE 
+MAIN PROC 
+
+;iniitialize DS
+
+MOV AX,@DATA 
+MOV DS,AX      
+
+;Code here
+
+
+ MOV AH,9
+ LEA DX,X
+ INT 21H  ;PRINT STRING X 
+ 
+ 
+ MOV AH,1
+ INT 21H
+ 
+ WHILE:
+    CMP AL,0DH
+    JE ENDED
+    
+    CMP AL,'A'
+    JE OK
+    CMP AL,'a'
+    JE OK
+    CMP AL,'E'
+    JE OK
+    CMP AL,'e'
+    JE OK
+    CMP AL,'I'
+    JE OK
+    CMP AL,'i'
+    JE OK
+    CMP AL,'O'
+    JE OK
+    CMP AL,'o'
+    JE OK
+    CMP AL,'U'
+    JE OK
+    CMP AL,'u'
+    JE OK
+    
+    UP:
+      INC TOTAL
+      INT 21H
+      JMP WHILE
+     
+    OK:
+      INC VOWEL
+      JMP UP
+     
+ENDED:
+
+    MOV DL,0AH
+    MOV AH,2
+    INT 21H    ;next line
+      
+    MOV DL,0DH      
+    INT 21H    ;new line from left corner
+
+    MOV AH,9
+    LEA DX,T
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,TOTAL
+    ADD DL,30H
+    INT 21H
+    
+    MOV DL,0AH
+    MOV AH,2
+    INT 21H    ;next line
+      
+    MOV DL,0DH      
+    INT 21H    ;new line from left corner
+    
+    MOV AH,9
+    LEA DX,Y
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,TOTAL
+    MOV BL,VOWEL
+    SUB DL,BL
+    ADD DL,30H
+    INT 21H
+      
+
+
+
+;exit to DOS 
+               
+MOV AX,4C00H
+INT 21H 
+
+MAIN ENDP
+    END MAIN 
+=============================================================
+; give input to display STAR
+
+.MODEL SMALL
+ 
+.STACK 100H
+
+
+   
+.DATA
+X DB "ENTER A NUMBER: $" 
+ 
+.CODE 
+
+MAIN PROC 
+
+;iniitialize DS
+
+MOV AX,@DATA 
+MOV DS,AX      
+
+;Code here 
+
+   LEA DX,X
+   MOV AH,9
+   INT 21H   ;display the string
+   
+   MOV BX,1
+   MOV AH,1   ;user input taking start
+   INT 21H    ;user input taking ends
+   SUB AL,30H
+   SUB AH,AH  
+   MOV CX,AX
+   
+   MOV DL,0AH
+   MOV AH,2
+   INT 21H    ;next line
+      
+   MOV DL,0DH      
+   INT 21H    ;new line from left corner 
+   
+   L1:
+   PUSH CX
+   MOV AH,2
+   MOV DL,32
+   L2:
+   INT 21H
+   LOOP L2
+   
+   MOV CX,BX
+   MOV DL,'*'
+   L3:
+   INT 21H
+   LOOP L3
+   MOV AH,2
+   MOV DL,10
+   INT 21H
+   MOV DL,13
+   INT 21H
+   INC BX
+   POP CX
+   LOOP L1
+     
+    
+    
+   
+
+
+;exit to DOS 
+               
+MOV AX,4C00H
+INT 21H 
+
+MAIN ENDP
+    END MAIN 

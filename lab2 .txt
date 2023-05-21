@@ -1,0 +1,635 @@
+=========================================================
+;Task 01 Take a character input and display it.
+; Display the message
+; "Please insert a character: " when taking an input.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    pkey db "press any key...$" 
+    str db "Please insert a character:$" 
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here     
+            
+    lea dx, str
+    mov ah, 9
+    int 21h        
+            
+    ;Input
+    mov ah,1 
+    int 21h 
+    
+    ;Output
+    mov dl,al ;Input Goes to al
+    mov ah,2  
+    int 21h
+               
+    ; wait for any key....    
+    mov ah, 1
+    int 21h
+    
+    mov ax, 4c00h ; exit to operating system.
+    int 21h    
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+
+====================================================================
+
+
+.MODEL SMALL
+.STACK 21H
+.DATA
+    INP_MSG1 DB "Please insert a character: $"
+    INP_MSG2 DB "Please enter a number: $"
+    OUT_MSG DB "Result: $"
+.CODE
+MAIN PROC
+    ;INITIALIZING
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    ;TASK 02
+    LEA DX, INP_MSG2
+    MOV AH, 9
+    INT 21H
+    
+    ;taking first number
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H ;CONVERTING THE GIVEN NUMBER TO APPROPIATE HEX
+    MOV BH, AL
+    
+    ;new line
+    MOV DL, 0DH
+    MOV AH, 2
+    INT 21H
+    MOV DL, 0AH
+    MOV AH, 2
+    INT 21H
+    
+    LEA DX, INP_MSG2
+    MOV AH, 9
+    INT 21H
+    
+    ;taking second number
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H ;CONVERTING THE GIVEN NUMBER TO APPROPIATE HEX
+    MOV BL, AL
+    
+    ;A + B
+    MOV CH, BH
+    MOV CL, BL
+    ADD CH, CL
+    
+    ;new line
+    MOV DL, 0DH
+    MOV AH, 2
+    INT 21H
+    MOV DL, 0AH
+    MOV AH, 2
+    INT 21H
+    
+    LEA DX, OUT_MSG
+    MOV AH, 9
+    INT 21H
+    
+    ;displaying result
+    MOV DL, CH
+    ADD DL, 30H ;COVERTING BACK TO RESPECTIVE HEX OF ASCII FORM
+    MOV AH, 2
+    INT 21H
+    
+    ;A - B
+    MOV CH, BH
+    MOV CL, BL
+    SUB CH, CL
+    
+    ;new line
+    MOV DL, 0DH
+    MOV AH, 2
+    INT 21H
+    MOV DL, 0AH
+    MOV AH, 2
+    INT 21H
+    
+    LEA DX, OUT_MSG
+    MOV AH, 9
+    INT 21H
+    
+    ;displaying result
+    MOV DL, CH
+    ADD DL, 30H ;COVERTING BACK TO RESPECTIVE HEX OF ASCII FORM
+    MOV AH, 2
+    INT 21H
+    
+    ;A * B
+    MOV AL, BH
+    MUL BL
+    ADD AX, 30H ;COVERTING BACK TO RESPECTIVE HEX OF ASCII FORM
+    MOV CX, AX
+    
+    MOV DL, 0DH
+    MOV AH, 2
+    INT 21H
+    MOV DL, 0AH
+    MOV AH, 2
+    INT 21H
+    
+    LEA DX, OUT_MSG
+    MOV AH, 9
+    INT 21H
+    
+    ;displaying result
+    MOV DX, CX
+    MOV AH, 2
+    INT 21H
+    
+    ;A / B
+    MOV AL, BH
+    MOV AH, 0H
+    DIV BL
+    MOV CL, AL
+    
+    ;new line
+    MOV DL, 0DH
+    MOV AH, 2
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    LEA DX, OUT_MSG
+    MOV AH, 9
+    INT 21H
+    
+    ;displaying result
+    MOV DL, CL
+    ADD DL, 30H ;COVERTING BACK TO RESPECTIVE HEX OF ASCII FORM
+    MOV AH, 2
+    INT 21H
+    
+    EXIT:
+    MOV AH, 4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+====================================================================================
+
+
+
+;Task 03 Write instructions to do the following. a. Read a character, and display it at the next position on the same line. b. Read an uppercase letter (omit error checking), and display it at the next position on the same line in lower case.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    pkey db "press any key...$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    
+    ;TASK 03(a)
+    mov ah,1 
+    int 21h 
+    
+    mov dl,al 
+    mov ah,2  
+    int 21h 
+    
+    mov dl, 0AH
+    mov ah,2 
+    int 21h  
+    mov dl, 13
+    int 21h
+    
+    ;Task 03(b)
+    
+    mov ah,1 
+    int 21h 
+    mov bl, al
+    
+    add bl, 32    
+    mov dl,bl 
+    mov ah,2  
+    int 21h 
+    
+    
+    
+    
+   
+    
+    mov ax, 4c00h ; exit to operating system.
+    int 21h    
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+
+
+
+
+==================================================================================
+
+
+
+;Task 04 Read an uppercase letter (omit error checking), 
+;and display it at the next position on the next line in lower case.
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    INP_MSG DB "ENTER A CHARACTER: $"
+.CODE
+MAIN PROC
+    ;INITIALIZING
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    LEA DX, INP_MSG
+    MOV AH, 9
+    INT 21H
+    
+    MOV AH, 1
+    INT 21H
+    ADD AL, 20H 
+    MOV CL, AL
+    
+    MOV AH, 2
+    MOV DL, 0AH
+    INT 21H
+    
+    MOV DL, CL
+    INT 21H
+    
+    EXIT:
+    MOV AH, 4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+
+
+
+
+
+
+
+
+
+==========================================================================================
+
+
+
+
+
+;Task 05 Write a program to:
+; (a) display a "?" (b) read two decimal digits
+; whose sum is less than 10, 
+;(c) display them and their sum on the next line,
+; with an appropriate message.
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    FN DB "FIRST NUMBER: $"
+    SN DB "SECOND NUMBER: $"
+    SUM DB "SUM: $"
+.CODE
+MAIN PROC
+    ;INITIALIZING
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    ;A
+    MOV AH, 2
+    MOV DL, '?'
+    INT 21H
+    
+    ;B
+    ;taking first number
+    MOV AH, 1
+    INT 21H
+    SUB AL, 30H
+    MOV BH, AL
+    
+    ;taking second number
+    INT 21H
+    SUB AL, 30H
+    MOV BL, AL
+    
+    ;new line
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    LEA DX, FN
+    MOV AH, 9
+    INT 21H
+    MOV AH, 2
+    MOV DL, BH
+    ADD DL, 30H
+    INT 21H
+    
+    ;new line
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    LEA DX, SN
+    MOV AH, 9
+    INT 21H
+    MOV AH, 2
+    MOV DL, BL
+    ADD DL, 30H
+    INT 21H
+    
+    ;new line
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    LEA DX, SUM
+    MOV AH, 9
+    INT 21H
+    ADD BH, BL
+    MOV AH, 2
+    MOV DL, BH
+    ADD DL, 30H
+    INT 21H
+    
+    EXIT:
+    MOV AH, 4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+
+
+
+
+
+
+
+
+=================================================================================
+
+
+
+
+
+
+
+
+;task 6Write a program to:
+;(a) prompt the user,
+ ;(b) read first, middle, and last initials of a person's name, and
+;then (c) display them down the left margin. 
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    MSG DB "ENTER THREE INITIALS: $"
+.CODE
+MAIN PROC
+    ;INITIALIZING
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    LEA DX, MSG
+    MOV AH, 9
+    INT 21H
+    
+    MOV AH, 1
+    INT 21H
+    MOV BH, AL
+    INT 21H
+    MOV BL, AL
+    INT 21H
+    MOV CH, AL
+    
+    ;new line
+    MOV AH, 2
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    MOV DL, BH
+    INT 21H
+    
+    ;new line
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+     
+    MOV DL, BL
+    INT 21H
+    
+    ;new line
+    MOV DL, 0DH
+    INT 21H
+    MOV DL, 0AH
+    INT 21H
+    
+    MOV DL, CH
+    INT 21H
+    
+    EXIT:
+    MOV AH, 4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+
+==========================================================================================
+
+
+
+
+;Write a program to read one of the hex digits A-F, and display it on the next line in 
+;decimal. Sample execution:
+
+
+data segment
+    ; add your data here!
+    s1 db "ENTER A HEX DIGIT: $" 
+    s2 db "IN DECIMAL IT IS: $"
+   
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    ;Printing Prompt & Input
+    lea dx, s1
+    mov ah, 9
+    int 21h
+    
+    mov ah,1 
+    int 21h
+    mov bh , al
+    
+    ;Second Line and Prompt
+    mov dl, 0AH
+    mov ah , 2
+    int 21h
+    mov dL,0DH 
+    int 21h 
+    mov dL,0AH 
+    int 21h
+    
+    lea dx, s2
+    mov ah, 9
+    int 21h
+    
+    ; Printing 1 as first number will always be 1
+    mov ah , 2
+    mov dl , 31h 
+    int 21h
+    
+    
+    ;Printing Second Number by subtracting 11
+    mov ah , 2
+    sub bh , 11h
+    mov dl , bh
+    int 21h        
+    
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+
+
+
+
+=========================================================================================
+
+
+
+;task 8
+
+;Task 08 Write a program to display a 10 x 10 solid box of asterisks.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    s db '**********',0DH,0AH,'$'
+    
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here 
+    
+    lea dx, s
+    mov ah, 9
+    
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+    int 21h
+     
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+
+
+
+================================================================================
+
+
+
+
+;task 9 ADD AL, BL. Where AL contains 80h,
+ ;BL contains 80h. Identify the status of different 
+;status flags.   
+
+
+;Task 09 ADD AL, BL. Where AL contains 80h, BL contains 80h. Identify the status of different status flags.
+
+MOV AL,80h
+MOV BL,80h
+ADD AL,BL
+
+;80h= 10000000b
+;80h= 10000000b
+;-----------------------
+;100h=100000000b
+
+  
+;Status Flag
+  
+; Zero Flag= 1 
+; Sign Flag= 1 
+; Carry Flag= 1
+; Parity Flag= 0 
+; Auxilary Flag= 1 
+; Overflow Flag= 1  

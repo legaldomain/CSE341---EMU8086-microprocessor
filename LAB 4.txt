@@ -1,0 +1,471 @@
+============================================================================================
+;Task 01 Write a count-controlled loop to display a row of 80 stars.
+
+; multi-segment executable file template.
+
+data segment
+    ; add your data here!
+    
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; add your code here
+    mov bh , 0 
+    mov ah , 2
+    mov dl , '*'
+    
+    begin:
+        cmp bh , 12
+        jge end
+        int 21h
+        inc bh
+        jmp begin
+        
+    end:       
+        
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+============================================================================================================
+
+;TASK 2 (NEED TO CHECK MIGHT BE ERRORS ) 
+.MODEL SMALL  
+
+
+    
+.STACK 100H
+.DATA    
+ A DB "*$" 
+
+.CODE
+MAIN PROC         
+    MOV AX,@DATA
+    MOV DS,AX  
+    
+    MOV CX,80
+    MOV BX,1
+    MOV DX,0
+    LOOOP: 
+    CMP BX,148
+    JG EXIT
+    ADD DX,BX
+    ADD BX,3
+    
+  
+    LOOP LOOOP
+    EXIT:   
+    MOV AH,2
+
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+
+
+============================================================================================================
+
+;task 3
+data segment
+    ; add your data here!
+    pkey db "press any key...$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; Task 03 : Read a five character password and overprint it by executing a carriage return and displaying five X's. You need not store the input characters anywhere.
+    
+    mov bl, 0 
+    mov cl, 0
+
+    begin: 
+    cmp bl, 5
+    jge second
+    mov ah, 1
+    int 21h
+    inc bl
+    jmp begin
+    
+    second:
+    mov ah, 2
+    mov dl, 0DH
+    int 21h
+    
+    third:
+    cmp cl, 5
+    jge end    
+    mov ah, 2
+    mov dl, 58H
+    int 21h
+    inc cl
+    jmp third
+    
+    end:
+    
+ends
+
+end start ; set entry point and stop the assembler.
+
+========================================================================================================================
+
+;task4
+
+data segment
+    ; add your data here!
+    pkey db "press any key...$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; Task 04
+	
+    mov cx, 0 ; product
+    mov ax, 3 ; m
+    mov bx, 2 ; n
+    
+    repeat:
+    add cx, ax
+    dec bx
+
+    cmp bx, 0
+    jne repeat
+
+    mov ah, 2
+    mov dl, cl
+    add dl, 48
+    int 21h
+   
+ends
+
+end start ; set entry point and stop the assembler.
+
+===============================================================================================================
+
+;TASK 5
+data segment
+    ; add your data here!
+    pkey db "press any key...$"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; Task 05 : Write a program to display the extended ASCII characters (ASCII codes 80h to FFh). Display 10 characters per line, separated by blanks. Stop after the extended characters have been displayed once.
+    
+    mov bx, 80H
+    mov cl, 0
+    
+    repeat:
+    cmp cl, 10
+    je newline
+    inc cl
+    
+    mov ah, 2
+    mov dx, bx
+    int 21h
+    
+    inc bx
+    
+    cmp bx, 0ffH
+    je exit
+    
+    jmp repeat
+    
+    newline:
+    ;printing newLine
+    mov dl, 0AH
+    mov ah, 2
+    int 21h
+    
+    ;printing creg return
+    mov dl, 13
+    mov ah, 2
+    int 21h
+    
+    mov cl, 0
+    
+    jmp repeat
+    
+    exit:
+
+ends
+
+end start ; set entry point and stop the assembler.
+
+
+
+
+
+
+
+=================================================================================================================
+
+
+;TASK 6 
+data segment
+    ; add your data here!
+    m db "ENTER A HEX DIGIT: $"
+    n db "IN DECIMAL IT IS $"
+    o db "DO YOU WANT TO DO IT AGAIN? $"
+    p db "ILLEGAL CHARACTER-ENTER 0..9 OR A..F: $"
+ends
+
+stack segment
+    dw   128  dup(0)
+ends
+
+code segment
+start:
+; set segment registers:
+    mov ax, data
+    mov ds, ax
+    mov es, ax
+
+    ; Task 06
+    
+    begin:
+    mov ah, 9
+    lea dx, m 
+    int 21h
+    
+    begin2:
+    mov ah, 1
+    int 21h
+    mov bl, al
+    
+    ; printing new line 
+    mov dl, 0AH
+    mov ah, 2
+    int 21h
+    
+    ; printing creg return
+    mov dl, 13
+    mov ah, 2
+    int 21h
+    
+    cmp bl, 30h
+    je print
+    
+    cmp bl, 31h
+    je print
+    
+    cmp bl, 32h
+    je print
+    
+    cmp bl, 33h
+    je print
+    
+    cmp bl, 34h
+    je print
+    
+    cmp bl, 35h
+    je print
+    
+    cmp bl, 36h
+    je print
+    
+    cmp bl, 37h
+    je print
+    
+    cmp bl, 38h
+    je print
+    
+    cmp bl, 39h
+    je print
+    
+    cmp bl, 41h
+    je print10
+    
+    cmp bl, 42h
+    je print11
+    
+    cmp bl, 43h
+    je print12
+    
+    cmp bl, 44h
+    je print13
+    
+    cmp bl, 45h
+    je print14
+    
+    cmp bl, 46h
+    je print15
+    
+    jmp printe
+    
+    
+    printe:
+    mov ah, 9
+    lea dx, p
+    int 21h
+    jmp begin2
+    
+    print:
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, bl
+  
+    mov ah, 2
+    int 21h
+    jmp next
+    
+    print10:        
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    mov dl, 30h
+    mov ah, 2
+    int 21h
+    
+    jmp next
+            
+    print11:        
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    
+    jmp next
+    
+    print12:        
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    mov dl, 32h
+    mov ah, 2
+    int 21h
+    
+    jmp next
+    
+    print13:        
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    mov dl, 33h
+    mov ah, 2
+    int 21h
+    
+    jmp next
+    
+    print14:        
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    mov dl, 34h
+    mov ah, 2
+    int 21h
+    
+    jmp next
+    
+    print15:        
+    mov ah, 9
+    lea dx, n
+    int 21h
+    mov dl, 31h
+    mov ah, 2
+    int 21h
+    mov dl, 35h
+    mov ah, 2
+    int 21h
+    
+    jmp next
+    
+    
+    next:
+    ;printing new line 
+    mov dl, 0AH
+    mov ah, 2
+    int 21h
+    
+    ;printing creg return
+    mov dl, 13
+    mov ah, 2
+    int 21h
+    
+    mov ah, 9
+    lea dx, o
+    int 21h
+    mov ah, 1
+    int 21h
+    
+    mov cl, al
+    
+    
+    ;printing newLine
+    mov dl, 0AH
+    mov ah, 2
+    int 21h
+    
+    ;printing creg return
+    mov dl, 13
+    mov ah, 2
+    int 21h
+    
+    
+    cmp cl, 'y'
+    je begin
+    cmp cl, 'Y'
+    je begin
+    jmp exit
+    
+    exit:
+            
+   
+ends
+
+end start ; set entry point and stop the assembler.
